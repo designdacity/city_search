@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="style.css">
+    <title>Document</title>
+</head>
+<body>
+    <div class="container">
+        <form action="" class="search-form">
+            <input type="text" class="search" placeholder="请输入城市名查找">
+            <ul class="suggestions">
+                <li>Filter for a city</li>
+                <li>or a state</li>
+            </ul>
+        </form>
+    </div>
+     <script>
+        // .json 远程的一个json文件
+        const endpoint = 'https://gist.githubusercontent.com/Miserlou/c5cd8364bf9b2420bb29/raw/2bf258763cdddd704f8ffd3ea9a3e81d25e2c6f6/cities.json';
+        const cities = [];
+        // 新一代的ajax 
+        // 浏览器缓存 css js img 等静态文件 第一次缓存以后会存储下来
+        fetch(endpoint) //去把数据请求回来
+            .then(blob => blob.json()) //请求数据需要花时间， then等待下载完毕，在变成一个变量子
+            .then(data => {
+                cities.push(...data);
+                //...data ...用来展开开这个数组data 相当于将data中的每一项压入栈
+                // console.log(cities);
+                document.querySelector('.suggestions').innerHTML = data.map(item => {
+                    // console.log(item);
+                    return `
+                    <li>${item.city}</li>
+                    `;
+                }).join('');
+
+                var searchInput = document.querySelector('.search');
+                searchInput.addEventListener('input', () => {
+                    const keyword = document.querySelector('.search').value;
+                    document.querySelector('.suggestions').innerHTML = data.filter(item => {
+                        return item.city.indexOf(keyword) > -1;
+
+                    }).map(item => {
+                        return `<li>${item.city}</li>`;
+                    }).join('');
+                })
+            })
+    </script>
+
+</body>
+</html>
